@@ -11,3 +11,11 @@ apply:
 destroy:
 	terraform plan -destroy -var-file terraform.tfvars -out terraform.tfplan
 	terraform apply terraform.tfplan
+
+refresh:
+	terraform plan -refresh=true -var-file terraform.tfvars -out terraform.tfplan
+	terraform refresh terraform.tfplan
+	terraform apply terraform.tfplan
+
+status:
+	terraform show terraform.tfstate
