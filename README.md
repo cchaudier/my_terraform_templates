@@ -1,5 +1,10 @@
 # terraform-aws-vpc
 
+## Name convention
+il y a un fichier par module.
+La convention de nommage est :
+ provider_resource.tf
+
 This goal of this project is to easily spin up an [Amazon Web Services](http://aws.amazon.com/) (AWS) [Virtual Private Cloud](http://aws.amazon.com/vpc/) (VPC) using [Terraform](http://terraform.io).
 
 ## Configuration
