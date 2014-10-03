@@ -28,22 +28,6 @@ resource "aws_security_group" "nat" {
 	vpc_id = "${aws_vpc.default.id}"
 }
 
-resource "aws_instance" "nat" {
-	ami = "${var.aws_nat_ami}"
-	availability_zone = "us-east-1b"
-	instance_type = "m1.small"
-	key_name = "${var.aws_key_name}"
-	security_groups = ["${aws_security_group.nat.id}"]
-	subnet_id = "${aws_subnet.us-east-1b-public.id}"
-	associate_public_ip_address = true
-	source_dest_check = false
-}
-
-resource "aws_eip" "nat" {
-	instance = "${aws_instance.nat.id}"
-	vpc = true
-}
-
 # Public subnets
 
 resource "aws_subnet" "us-east-1b-public" {
@@ -101,12 +85,6 @@ resource "aws_subnet" "us-east-1d-private" {
 
 resource "aws_route_table" "us-east-1-private" {
 	vpc_id = "${aws_vpc.default.id}"
-
-	route {
-		cidr_block = "0.0.0.0/0"
-		instance_id = "${aws_instance.nat.id}"
-	}
-}
 
 resource "aws_route_table_association" "us-east-1b-private" {
 	subnet_id = "${aws_subnet.us-east-1b-private.id}"
