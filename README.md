@@ -90,3 +90,10 @@ Apply complete! Resources: 0 added, 0 changed, 1 destroyed.
 ```
 
 **Note**: The `destroy` step usually has to be run more than once because of an issue with deleting the Elastic IP (EIP) before it is unbound from the NAT instance. Run `make destroy` again after the failure to complete the destroy phase.
+TODO: describe
+### Refresh
+```bash
+$ make refresh
+### Status
+```bash
+$ make destroy
