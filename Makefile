@@ -10,7 +10,7 @@ apply:
 
 destroy:
 	terraform plan -destroy -var-file terraform.tfvars -out terraform.tfplan
-	terraform apply terraform.tfplan
+	terraform apply terraform.tfplan; terraform apply terraform.tfplan
 
 refresh:
 	terraform plan -refresh=true -var-file terraform.tfvars -out terraform.tfplan
