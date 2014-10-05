@@ -2,4 +2,5 @@
 *.tfplan
 *.tfstate
 *.tfstate.backup
+crash.log
 tmp/
