@@ -6,8 +6,8 @@ resource "aws_db_instance" "db" {
   engine_version = "9.3.3"
   
   #Taille
-  instance_class = "db.t1.micro"
-  #instance_class = "db.t2.micro"
+  #instance_class = "db.t1.micro"
+  instance_class = "db.t2.micro"
   allocated_storage = 5
 
   #Base de donnée à créer
@@ -18,6 +18,6 @@ resource "aws_db_instance" "db" {
   #Backup
 
   #Securité
-  #publicly_accessible = "true"
+  publicly_accessible = "false"
   #security_group_names = ["${aws_db_security_group.bar.name}"]
 }
