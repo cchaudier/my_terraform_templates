@@ -1,7 +1,3 @@
-output "db_address" {
-  value = "${aws_db_instance.db.adresse}"
-}
-
 output "db_endpoint" {
   value = "${aws_db_instance.db.endpoint}"
 }
