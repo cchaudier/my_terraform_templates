@@ -19,3 +19,6 @@ refresh:
 
 status:
 	terraform show terraform.tfstate
+
+clean:
+	rm -rf *.tfstate*
