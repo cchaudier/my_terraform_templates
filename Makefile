@@ -22,3 +22,4 @@ status:
 
 clean:
 	rm -rf *.tfstate*
+	rm -rf *.log
