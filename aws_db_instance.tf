@@ -15,8 +15,11 @@ resource "aws_db_instance" "db" {
   password = "${var.aws_db_password}"
 
   #Backup
+  skip_final_snapshot = "true"
 
   #Securité
   publicly_accessible = "false"
-  #security_group_names = ["${aws_db_security_group.db_sg.name}"]
+  availability_zone = "${var.aws_zone.a}"
+  vpc_security_group_ids = ["${aws_security_group.rds_sg.id}"]
+  db_subnet_group_name = "${aws_db_subnet_group.db_private_subnet.name}"
 }

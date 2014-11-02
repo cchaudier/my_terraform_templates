@@ -23,25 +23,22 @@ resource "aws_security_group" "web_sg" {
 	vpc_id = "${aws_vpc.my_vpc.id}"
 }
 
-resource "aws_security_group" "db_sg" {
-  name = "db_sb"
-  description = "Base de donnees"
+resource "aws_security_group" "rds_sg" {
+    name = "rds_sg"
+    description = "RDS Web"
 
-  # postgres port
-  ingress {
-    from_port = 5432
-    to_port = 5432
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-/*
-  # postgres port
-  ingress {
-    from_port = 5432
-    to_port = 5432
-    protocol = "tcp"
-    cidr_blocks = ["local"]
-  }
-*/
+    # pg port access from anywhere
+    ingress {
+        from_port = 5432
+        to_port = 5432
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
 	vpc_id = "${aws_vpc.my_vpc.id}"
+}
+
+resource "aws_db_security_group" "db_sg" {
+  name = "db_sg"
+  description = "RDS security groupe"
 }
