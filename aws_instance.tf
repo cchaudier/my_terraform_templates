@@ -5,13 +5,9 @@ resource "aws_instance" "web" {
   key_name = "${var.aws_key_name}"
 
   # Our Security group to allow HTTP and SSH access
-  depends_on = [ 
-    "aws_security_group.web_sg" 
-  ]
-  security_groups = [
-    "${aws_security_group.web_sg.id}"
-  ]
-  subnet_id = "${aws_subnet.publique_subnet.id}"
+  depends_on = ["aws_security_group.web_sg"]
+  security_groups = ["${aws_security_group.web_sg.id}"]
+  subnet_id = "${aws_subnet.publique_subnet_a.id}"
 
   # We run a local provisioner on the instance after creating it.
   #provisioner "local-exec" {
