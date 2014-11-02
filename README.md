@@ -99,6 +99,14 @@ TODO: describe
 ### Refresh
 ```bash
 $ make refresh
+```
 ### Status
 ```bash
-$ make destroy
+$ make status
+```
+### clean
+clean all log and tfstate files
+```bash
+$ make clean
+```
+
