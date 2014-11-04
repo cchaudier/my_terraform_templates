@@ -1,8 +1,9 @@
 #!/bin/bash
 init() {
-  security_groupe_name=rds_sg
-  client=cosmo
-  engine=redis
+  . terraform.tfvars
+  security_groupe_name=$aws_db_sg_name
+  client=$client_name
+  engine=$aws_elasticache_engine
   azone=eu-west-1a
   cache_node_type=cache.t2.micro
   vpc_id=$(aws ec2 describe-security-groups \
@@ -15,24 +16,32 @@ init() {
     --filter Name=vpc-id,Values=$vpc_id | \
     grep SubnetId|tr -d '"'|tr -d ','|tr -d ' '|cut -d ':' -f 2|tr '\n' ' ')
   cache_subnet_group_name="${client}-cache-subnet"
-  cache_subnet_group_name="cache-subnet"
   cache_cluster_id="${client}-${engine}"
 }
 
 wip(){
   echo     "      - Work in progress "
   echo -n  "        "
-  wip=1
-  while [[ $wip -eq 1 ]]; do
+  if [[ $action = "create" ]];then
+    state=0
+    cache_state=available
+  else
+    state=1
+    cache_state=deleting
+  fi
+
+  while [[ ( $action = "create"  && $state -eq 0 ) || \
+           ( $action = "destroy" && $state -eq 1 ) ]]; do
     if [[ $1 == "cluster" ]]; then
       sleep 30
       aws elasticache describe-cache-clusters --out text| \
-        grep $cache_cluster_id || wip=0
+        grep $cache_state | grep $cache_cluster_id >/dev/null \
+        && state=1 || state=0
     elif [[ $1 == "subnet" ]]; then
       sleep 5
-      aws elasticache describe-cache-subnet-groups \
-        --cache-subnet-group-name $cache_subnet_group_name 2>/dev/null \
-        grep $cache_subnet_group_name || wip=0
+      aws elasticache describe-cache-subnet-groups |\
+        grep $cache_subnet_group_name >/dev/null \
+        && state=1 || state=0
     fi
     echo -n "."
   done
@@ -66,11 +75,11 @@ destroy_cache_cluster(){
   echo "  => Destroy cache cluster $cache_cluster_id"
   destroy_cache=0
   aws elasticache describe-cache-clusters --out text| \
-    grep $cache_cluster_id \
+    grep $cache_cluster_id >/dev/null \
     && destroy_cache=1 \
     || echo "      + Pas de cluster à détruire"
   if [[ $destroy_cache -eq 1 ]]; then
-    aws elasticache delete-cache-cluster --cache-cluster-id $cache_cluster_id
+    aws elasticache delete-cache-cluster --cache-cluster-id $cache_cluster_id >/dev/null
     wip cluster
   fi
 }
@@ -78,14 +87,13 @@ destroy_cache_cluster(){
 destroy_cache_subnet(){
   echo "  => Destroy cache subnet $cache_subnet_group_name"
   destroy_subnet=0
-  aws elasticache describe-cache-subnet-groups \
-    --cache-subnet-group-name $cache_subnet_group_name 2>/dev/null |\
-    grep $cache_subnet_group_name \
+  aws elasticache describe-cache-subnet-groups |\
+    grep $cache_subnet_group_name >/dev/null \
     && destroy_subnet=1 \
     || echo "      + Pas de subnet à détruire"
   if [[ $destroy_subnet -eq 1 ]]; then
     aws elasticache delete-cache-subnet-group \
-     --cache-subnet-group-name $cache_subnet_group_name
+     --cache-subnet-group-name $cache_subnet_group_name >/dev/null
     wip subnet
   fi
 }
@@ -108,4 +116,5 @@ if [[ $# -ne 1 ]]; then
 fi
 
 init
-trt_$1
+action=$1
+trt_$action
