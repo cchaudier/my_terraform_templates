@@ -35,6 +35,14 @@ resource "aws_security_group" "rds_sg" {
         cidr_blocks = ["0.0.0.0/0"]
     }
 
+    # elasticache redis access from anywhere
+    ingress {
+        from_port = 6379
+        to_port = 6379
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
 	vpc_id = "${aws_vpc.my_vpc.id}"
 }
 
