@@ -1,6 +1,9 @@
 #!/bin/bash
 init() {
   . terraform.tfvars
+  export AWS_ACCESS_KEY_ID=$aws_access_key
+  export AWS_SECRET_ACCESS_KEY=$aws_secret_key
+
   security_groupe_name=$aws_db_sg_name
   client=$client_name
   engine=$aws_elasticache_engine
@@ -19,7 +22,7 @@ init() {
   cache_cluster_id="${client}-${engine}"
 }
 
-wip(){
+wip() {
   echo     "      - Work in progress "
   echo -n  "        "
   if [[ $action = "create" ]];then
@@ -71,7 +74,7 @@ create_cache_subnet() {
   wip subnet
 }
 
-destroy_cache_cluster(){
+destroy_cache_cluster() {
   echo "  => Destroy cache cluster $cache_cluster_id"
   destroy_cache=0
   aws elasticache describe-cache-clusters --out text| \
@@ -84,7 +87,7 @@ destroy_cache_cluster(){
   fi
 }
 
-destroy_cache_subnet(){
+destroy_cache_subnet() {
   echo "  => Destroy cache subnet $cache_subnet_group_name"
   destroy_subnet=0
   aws elasticache describe-cache-subnet-groups |\
@@ -108,6 +111,18 @@ trt_destroy() {
   echo "  => Destroy cache"
   destroy_cache_cluster
   destroy_cache_subnet
+}
+
+trt_status() {
+  echo "  => Statut cache"
+  aws elasticache describe-cache-subnet-groups |\
+    grep $cache_subnet_group_name >/dev/null \
+    && echo "      + Subnet $cache_subnet_group_name UP" \
+    || echo "      + Subnet $cache_subnet_group_name DOWN"
+  aws elasticache describe-cache-clusters --out text| \
+    grep $cache_cluster_id >/dev/null \
+    && echo "      + Clusteur $cache_cluster_id UP" \
+    || echo "      + Clusteur $cache_cluster_id DOWN"
 }
 
 if [[ $# -ne 1 ]]; then
