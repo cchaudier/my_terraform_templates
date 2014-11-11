@@ -1,4 +1,4 @@
-ansible_dir=ansible
+ansible_dir=ansible/vars
 tfvars_file=terraform.tfvars
 
 .PHONY: all plan apply destroy
@@ -30,12 +30,12 @@ clean:
 
 dev:
 	ln -fs $@.tfvars $(tfvars_file)
-	cd $(ansible_dir)/env_vars; ln -fs $@.yml spec.yml
+	cd $(ansible_dir) && ln -fs $@.yml spec.yml
 
 staging:
 	ln -fs $@.tfvars $(tfvars_file)
-	cd $(ansible_dir)/env_vars; ln -fs $@.yml spec.yml
+	cd $(ansible_dir) && ln -fs $@.yml spec.yml
 
 prod:
 	ln -fs $@.tfvars $(tfvars_file)
-	cd $(ansible_dir)/env_vars; ln -fs $@.yml spec.yml
+	cd $(ansible_dir) && ln -fs $@.yml spec.yml
